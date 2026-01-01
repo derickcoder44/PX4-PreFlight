@@ -24,7 +24,7 @@ MicroXRCEAgent udp4 -p 8888 &
 DDS_PID=$!
 echo "Starting PX4 Simulation..."
 cd "$PX4_DIR"
-make px4_sitl gz_x500 &
+make px4_sitl &
 PX4_PID=$!
 #debug
 sleep 20

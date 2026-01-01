@@ -31,7 +31,8 @@ jobs:
             empy==3.3.4 \
             pyros-genmsg \
             jinja2 \
-            packaging
+            packaging \
+            jsonschema
       - name: Clone PX4 and ROS dependencies
         run: |
           mkdir -p ~/workspace
