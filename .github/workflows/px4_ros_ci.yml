@@ -1,18 +1,15 @@
 name: PX4 ROS2 Integration CI
-
 on:
   push:
   pull_request:
-
 jobs:
   px4-ros2:
     runs-on: ubuntu-latest
-
     container:
       image: ghcr.io/sloretz/ros:humble-desktop-full
 
     steps:
-      - name: Checkout repository
+      - name: Checkout repo
         uses: actions/checkout@v4
 
       - name: Install dependencies
@@ -31,12 +28,10 @@ jobs:
 
           pip3 install --no-cache-dir \
             kconfiglib \
-            menuconfig \
             empy==3.3.4 \
             pyros-genmsg \
             jinja2 \
             packaging
-
       - name: Clone PX4 and ROS dependencies
         run: |
           mkdir -p ~/workspace
@@ -47,9 +42,10 @@ jobs:
           cd ros2_ws/src
           git clone -b release/1.14 https://github.com/PX4/px4_msgs.git
           git clone -b release/v1.14 https://github.com/PX4/px4_ros_com.git
-
       - name: Run PX4 and ROS integration test
         run: |
           chmod +x ci/run_px4_ros2.sh
           ci/run_px4_ros2.sh
+
+
 
