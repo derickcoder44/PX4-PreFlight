@@ -1,0 +1,46 @@
+name: PX4 ROS2 Integration CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  px4-ros2:
+    runs-on: ubuntu-latest
+
+    container:
+      image: ghcr.io/sloretz/ros:humble-desktop-full
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install system dependencies
+        run: |
+          apt-get update
+          apt-get install -y \
+            git \
+            python3-pip \
+            ninja-build \
+            protobuf-compiler \
+            libeigen3-dev \
+            libopencv-dev \
+            cmake \
+            build-essential
+
+      - name: Clone PX4 + ROS 2 dependencies
+        run: |
+          mkdir -p ~/workspace
+          cd ~/workspace
+          git clone -b release/1.14 https://github.com/PX4/PX4-Autopilot.git --recursive
+
+          mkdir -p ros2_ws/src
+          cd ros2_ws/src
+          git clone -b release/1.14 https://github.com/PX4/px4_msgs.git
+          git clone -b release/v1.14 https://github.com/PX4/px4_ros_com.git
+
+      - name: Run PX4 + ROS 2 integration test
+        run: |
+          chmod +x ci/run_px4_ros2_ci.sh
+          ci/run_px4_ros2_ci.sh
+
