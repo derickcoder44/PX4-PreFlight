@@ -15,12 +15,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install system dependencies
+      - name: Install dependencies
         run: |
           apt-get update
           apt-get install -y \
             git \
             python3-pip \
+            python-is-python3 \
             ninja-build \
             protobuf-compiler \
             libeigen3-dev \
@@ -28,7 +29,15 @@ jobs:
             cmake \
             build-essential
 
-      - name: Clone PX4 + ROS 2 dependencies
+          pip3 install --no-cache-dir \
+            kconfiglib \
+            menuconfig \
+            empy==3.3.4 \
+            pyros-genmsg \
+            jinja2 \
+            packaging
+
+      - name: Clone PX4 and ROS dependencies
         run: |
           mkdir -p ~/workspace
           cd ~/workspace
@@ -39,7 +48,7 @@ jobs:
           git clone -b release/1.14 https://github.com/PX4/px4_msgs.git
           git clone -b release/v1.14 https://github.com/PX4/px4_ros_com.git
 
-      - name: Run PX4 + ROS 2 integration test
+      - name: Run PX4 and ROS integration test
         run: |
           chmod +x ci/run_px4_ros2.sh
           ci/run_px4_ros2.sh
