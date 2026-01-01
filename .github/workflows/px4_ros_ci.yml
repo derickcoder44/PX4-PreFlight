@@ -42,5 +42,5 @@ jobs:
       - name: Run PX4 + ROS 2 integration test
         run: |
           chmod +x ci/run_px4_ros2.sh
-          ci/run_px4_ros2_ci.sh
+          ci/run_px4_ros2.sh
 
