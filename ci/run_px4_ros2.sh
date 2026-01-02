@@ -19,10 +19,12 @@ cd "$PX4_DIR"
 make px4_sitl
 #build ROS
 echo "Building ROS..."
+set +u
 source /opt/ros/humble/setup.bash
 cd "$ROS_WS"
 colcon build --symlink-install
 source install/setup.bash
+set -u
 #start microxrcedds
 echo "Starting microxrce agent..."
 MicroXRCEAgent udp4 -p 8888 &
