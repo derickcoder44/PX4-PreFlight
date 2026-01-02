@@ -32,7 +32,10 @@ jobs:
             pyros-genmsg \
             jinja2 \
             packaging \
-            jsonschema
+            jsonschema \
+            future \
+            pyyaml \
+            pyserial
       - name: Clone PX4 and ROS dependencies
         run: |
           mkdir -p ~/workspace
