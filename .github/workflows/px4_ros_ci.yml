@@ -8,7 +8,8 @@ jobs:
   px4-ros:
     runs-on: ubuntu-22.04
     container:
-      image: osrf/ros:humble-desktop-full
+      image: ghcr.io/sloretz/ros:humble-desktop-full
+
 
     steps:
       - name: checkout repo
@@ -120,8 +121,8 @@ jobs:
           export GZ_SIM_RESOURCE_PATH=$HOME/workspace/PX4-Autopilot/Tools/simulation/gz/models
           export GZ_SIM_SYSTEM_PLUGIN_PATH=$HOME/workspace/PX4-Autopilot/build/px4_sitl_default/build_gz-garden
           cd $HOME/workspace/PX4-Autopilot
-          make clean
-          HEADLESS=1 make px4_sitl
+          make distclean
+          HEADLESS=1 make px4_sitl gz_x500
           EOF
           chmod +x $HOME/scripts/build_px4.sh
 
@@ -151,8 +152,9 @@ jobs:
           export PX4_UXRCE_DDS_PORT=8888
           export GZ_SIM_RESOURCE_PATH=$HOME/workspace/PX4-Autopilot/Tools/simulation/gz/models
           export GZ_SIM_SYSTEM_PLUGIN_PATH=$HOME/workspace/PX4-Autopilot/build/px4_sitl_default/build_gz-garden
+          export HEADLESS=1
           cd $HOME/workspace/PX4-Autopilot
-          HEADLESS=1 make px4_sitl
+          HEADLESS=1 make px4_sitl gz_x500
           EOF
           chmod +x $HOME/scripts/run_simulation.sh
 
