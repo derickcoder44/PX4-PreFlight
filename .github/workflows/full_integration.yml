@@ -1,0 +1,17 @@
+name: Full Integration Test
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  workflow_dispatch:
+
+jobs:
+  # Use the PX4+ROS2 workflow from px4-github-workflows submodule
+  px4-ros-integration:
+    uses: derickcoder44/px4-github-workflows/.github/workflows/px4_ros_ci.yml@main
+
+  # Placeholder for code-checker workflows (add when implemented)
+  # code-quality:
+  #   uses: derickcoder44/code-checker/.github/workflows/type_check.yml@main

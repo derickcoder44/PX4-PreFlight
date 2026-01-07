@@ -1,0 +1,9 @@
+[submodule "docker-px4-core"]
+	path = docker-px4-core
+	url = https://github.com/derickcoder44/docker-px4-core.git
+[submodule "px4-github-workflows"]
+	path = px4-github-workflows
+	url = https://github.com/derickcoder44/px4-github-workflows.git
+[submodule "code-checker"]
+	path = code-checker
+	url = https://github.com/derickcoder44/code-checker.git
