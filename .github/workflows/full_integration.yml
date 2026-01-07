@@ -12,6 +12,12 @@ jobs:
   px4-ros-integration:
     uses: derickcoder44/px4-github-workflows/.github/workflows/px4_ros_ci.yml@main
 
-  # Placeholder for code-checker workflows (add when implemented)
-  # code-quality:
-  #   uses: derickcoder44/code-checker/.github/workflows/type_check.yml@main
+  # Code quality checks from code-checker submodule
+  code-quality-type-check:
+    uses: derickcoder44/code-checker/.github/workflows/type_check.yml@main
+
+  code-quality-lint:
+    uses: derickcoder44/code-checker/.github/workflows/lint.yml@main
+
+  code-quality-autoreview:
+    uses: derickcoder44/code-checker/.github/workflows/autoreview.yml@main
