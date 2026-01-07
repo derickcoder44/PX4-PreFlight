@@ -1,6 +1,6 @@
-[submodule "docker-px4-core"]
-	path = docker-px4-core
-	url = https://github.com/derickcoder44/docker-px4-core.git
+[submodule "ros-px4-bridge-docker"]
+	path = ros-px4-bridge-docker
+	url = https://github.com/derickcoder44/ros-px4-birdge-docker.git
 [submodule "px4-github-workflows"]
 	path = px4-github-workflows
 	url = https://github.com/derickcoder44/px4-github-workflows.git
