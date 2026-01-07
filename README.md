@@ -12,7 +12,7 @@ This repository follows a modular design where each component is maintained as a
 
 ```
 PX4-PreFlight/                    (Orchestrator)
-├── docker-px4-core/              (Submodule) - Core PX4 Docker setup
+├── ros-px4-bridge-docker/        (Submodule) - ROS 2 + PX4 Docker bridge
 ├── px4-github-workflows/         (Submodule) - CI/CD workflows
 ├── code-checker/                 (Submodule) - Code quality tools
 └── .github/workflows/            (Orchestrator workflows)
@@ -20,8 +20,8 @@ PX4-PreFlight/                    (Orchestrator)
 
 ### Submodules
 
-1. **[docker-px4-core](https://github.com/derickcoder44/docker-px4-core)**
-   - Core PX4-in-Docker functionality
+1. **[ros-px4-bridge-docker](https://github.com/derickcoder44/ros-px4-birdge-docker)**
+   - ROS 2 + PX4 Docker bridge functionality
    - Build scripts, simulation runners, DDS agent setup
    - Reusable in any project needing PX4 simulation
 
@@ -52,8 +52,8 @@ git submodule update --init --recursive
 Each submodule can be used independently:
 
 ```bash
-# Use just the PX4 Docker scripts
-git submodule add https://github.com/derickcoder44/docker-px4-core.git
+# Use just the ROS 2 + PX4 Docker bridge
+git submodule add https://github.com/derickcoder44/ros-px4-birdge-docker.git
 
 # Use just the workflows
 git submodule add https://github.com/derickcoder44/px4-github-workflows.git
@@ -89,7 +89,7 @@ cd code-checker
 
 ```bash
 # Install dependencies (in container or local)
-cd docker-px4-core
+cd ros-px4-bridge-docker
 ./scripts/install_dependencies.sh
 ./scripts/install_gazebo.sh
 ./scripts/install_dds_agent.sh
@@ -114,7 +114,7 @@ The repository includes orchestrator workflows that combine all submodule capabi
 
 - **Full Integration Test**: Tests PX4+ROS 2 integration using workflows from `px4-github-workflows`
 - **Code Quality Checks**: Runs type checking and linting from `code-checker`
-- **Simulation Validation**: Uses scripts from `docker-px4-core` for environment setup
+- **Simulation Validation**: Uses scripts from `ros-px4-bridge-docker` for environment setup
 
 ## Updating Submodules
 
@@ -123,7 +123,7 @@ The repository includes orchestrator workflows that combine all submodule capabi
 git submodule update --remote
 
 # Update specific submodule
-git submodule update --remote docker-px4-core
+git submodule update --remote ros-px4-bridge-docker
 
 # Commit submodule updates
 git add .
@@ -136,7 +136,7 @@ git commit -m "Update submodules to latest versions"
 Use the complete suite for comprehensive testing of PX4 changes.
 
 ### For ROS 2 Developers
-Include `docker-px4-core` and `px4-github-workflows` for PX4 integration testing.
+Include `ros-px4-bridge-docker` and `px4-github-workflows` for PX4 integration testing.
 
 ### For General Projects
 Use `code-checker` independently for code quality enforcement.
@@ -144,7 +144,7 @@ Use `code-checker` independently for code quality enforcement.
 ## Contributing
 
 Each submodule has its own repository and can be improved independently:
-- Contribute to [docker-px4-core](https://github.com/derickcoder44/docker-px4-core)
+- Contribute to [ros-px4-bridge-docker](https://github.com/derickcoder44/ros-px4-birdge-docker)
 - Contribute to [px4-github-workflows](https://github.com/derickcoder44/px4-github-workflows)
 - Contribute to [code-checker](https://github.com/derickcoder44/code-checker)
 
