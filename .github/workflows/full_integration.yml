@@ -8,9 +8,10 @@ on:
   workflow_dispatch:
 
 jobs:
-  # Use the PX4+ROS2 workflow from px4-github-workflows submodule
-  px4-ros-integration:
-    uses: derickcoder44/px4-github-workflows/.github/workflows/px4_ros_ci.yml@main
+  # Use the PX4+ROS2 flight test workflow with GUI video recording and camera following
+  # TODO: Uncomment once ros-px4-bridge-docker repository is created on GitHub
+  # px4-ros-flight-test:
+  #   uses: derickcoder44/ros-px4-bridge-docker/.github/workflows/test-flight.yml@main
 
   # Code quality checks from code-checker submodule
   code-quality-type-check:
