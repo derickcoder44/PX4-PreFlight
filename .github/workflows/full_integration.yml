@@ -26,7 +26,11 @@ jobs:
 
   # PX4+ROS2 integration test
   px4-ros-integration:
+    needs: build-sim-image
     uses: ./.github/workflows/px4_ros_integration.yml
+    permissions:
+      contents: read
+      packages: read
 
   # Flight test with takeoff, hover, and landing (builds its own image)
   flight-test:
