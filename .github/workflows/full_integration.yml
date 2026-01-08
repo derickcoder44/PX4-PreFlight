@@ -10,12 +10,14 @@ on:
 jobs:
   # Validate Docker builds (builds locally, doesn't push - uses existing :latest images for tests)
   # Images are published by each repo's own workflow when code is pushed to main
+  # Note: We grant packages:write to match reusable workflow permissions, but the workflow
+  # won't actually push because event_name == 'workflow_call' triggers the skip condition
   build-ros-bridge-image:
     uses: derickcoder44/ros-px4-bridge-docker/.github/workflows/build.yml@main
     secrets: inherit
     permissions:
       contents: read
-      packages: read
+      packages: write
 
   build-sim-image:
     uses: derickcoder44/px4-sim-docker/.github/workflows/build.yml@main
@@ -23,7 +25,7 @@ jobs:
     secrets: inherit
     permissions:
       contents: read
-      packages: read
+      packages: write
 
   # PX4+ROS2 integration test (uses pre-built px4-sim-docker:latest from registry)
   px4-ros-integration:
