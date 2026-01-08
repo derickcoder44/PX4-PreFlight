@@ -8,14 +8,27 @@ on:
   workflow_dispatch:
 
 jobs:
+  # Build base Docker images in order
+  build-ros-bridge-image:
+    uses: derickcoder44/ros-px4-bridge-docker/.github/workflows/build.yml@main
+    secrets: inherit
+
+  build-sim-image:
+    uses: derickcoder44/px4-sim-docker/.github/workflows/build.yml@main
+    needs: build-ros-bridge-image
+    secrets: inherit
+
   # Use the PX4+ROS2 workflow from px4-github-workflows submodule
   px4-ros-integration:
     uses: derickcoder44/px4-github-workflows/.github/workflows/px4_ros_ci.yml@main
 
-  # Flight test with takeoff, hover, and landing
+  # Flight test with takeoff, hover, and landing (builds its own image)
   flight-test:
     uses: derickcoder44/px4-flight-test-docker/.github/workflows/test-flight.yml@main
-    needs: px4-ros-integration
+    needs:
+      - px4-ros-integration
+      - build-sim-image
+    secrets: inherit
 
   # Code quality checks from code-checker submodule
   code-quality-type-check:
