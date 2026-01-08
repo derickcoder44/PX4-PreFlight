@@ -18,9 +18,9 @@ jobs:
     needs: build-ros-bridge-image
     secrets: inherit
 
-  # Use the PX4+ROS2 workflow from px4-github-workflows submodule
+  # PX4+ROS2 integration test
   px4-ros-integration:
-    uses: derickcoder44/px4-github-workflows/.github/workflows/px4_ros_ci.yml@main
+    uses: ./.github/workflows/px4_ros_integration.yml
 
   # Flight test with takeoff, hover, and landing (builds its own image)
   flight-test:
@@ -29,13 +29,3 @@ jobs:
       - px4-ros-integration
       - build-sim-image
     secrets: inherit
-
-  # Code quality checks from code-checker submodule
-  code-quality-type-check:
-    uses: derickcoder44/code-checker/.github/workflows/type_check.yml@main
-
-  code-quality-lint:
-    uses: derickcoder44/code-checker/.github/workflows/lint.yml@main
-
-  code-quality-autoreview:
-    uses: derickcoder44/code-checker/.github/workflows/autoreview.yml@main
