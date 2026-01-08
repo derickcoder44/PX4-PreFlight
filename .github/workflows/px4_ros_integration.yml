@@ -14,6 +14,10 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
 
+    defaults:
+      run:
+        shell: bash
+
     steps:
       - name: start dds and px4
         run: |
