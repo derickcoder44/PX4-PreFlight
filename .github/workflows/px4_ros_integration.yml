@@ -1,8 +1,6 @@
 name: PX4 ROS Integration CI
 
 on:
-  push:
-  pull_request:
   workflow_call:
 
 jobs:
