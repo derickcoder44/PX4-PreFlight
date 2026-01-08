@@ -12,6 +12,11 @@ jobs:
   px4-ros-integration:
     uses: derickcoder44/px4-github-workflows/.github/workflows/px4_ros_ci.yml@main
 
+  # Flight test with takeoff, hover, and landing
+  flight-test:
+    uses: derickcoder44/px4-flight-test-docker/.github/workflows/test-flight.yml@main
+    needs: px4-ros-integration
+
   # Code quality checks from code-checker submodule
   code-quality-type-check:
     uses: derickcoder44/code-checker/.github/workflows/type_check.yml@main
