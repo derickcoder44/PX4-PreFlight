@@ -8,13 +8,14 @@ on:
   workflow_dispatch:
 
 jobs:
-  # Build base Docker images in order
+  # Validate Docker builds (builds locally, doesn't push - uses existing :latest images for tests)
+  # Images are published by each repo's own workflow when code is pushed to main
   build-ros-bridge-image:
     uses: derickcoder44/ros-px4-bridge-docker/.github/workflows/build.yml@main
     secrets: inherit
     permissions:
       contents: read
-      packages: write
+      packages: read
 
   build-sim-image:
     uses: derickcoder44/px4-sim-docker/.github/workflows/build.yml@main
@@ -22,9 +23,9 @@ jobs:
     secrets: inherit
     permissions:
       contents: read
-      packages: write
+      packages: read
 
-  # PX4+ROS2 integration test
+  # PX4+ROS2 integration test (uses pre-built px4-sim-docker:latest from registry)
   px4-ros-integration:
     needs: build-sim-image
     uses: ./.github/workflows/px4_ros_integration.yml
@@ -32,7 +33,7 @@ jobs:
       contents: read
       packages: read
 
-  # Flight test with takeoff, hover, and landing (builds its own image)
+  # Flight test with takeoff, hover, and landing
   flight-test:
     uses: derickcoder44/px4-flight-test-docker/.github/workflows/test-flight.yml@main
     needs:
