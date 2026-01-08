@@ -12,11 +12,17 @@ jobs:
   build-ros-bridge-image:
     uses: derickcoder44/ros-px4-bridge-docker/.github/workflows/build.yml@main
     secrets: inherit
+    permissions:
+      contents: read
+      packages: write
 
   build-sim-image:
     uses: derickcoder44/px4-sim-docker/.github/workflows/build.yml@main
     needs: build-ros-bridge-image
     secrets: inherit
+    permissions:
+      contents: read
+      packages: write
 
   # PX4+ROS2 integration test
   px4-ros-integration:
@@ -29,3 +35,6 @@ jobs:
       - px4-ros-integration
       - build-sim-image
     secrets: inherit
+    permissions:
+      contents: read
+      packages: write
