@@ -1,88 +1,82 @@
 # PX4-PreFlight
 
-Complete integration testing suite for PX4 Autopilot with modular, reusable components.
+Integration testing suite for PX4 Autopilot with ROS 2, featuring containerized simulation and automated workflows.
 
 ## Overview
 
-PX4-PreFlight is a comprehensive testing framework that orchestrates multiple specialized modules for PX4 development and testing. It uses a modular architecture with git submodules, allowing individual components to be inherited and reused across different projects.
+PX4-PreFlight provides a complete testing framework for PX4 Autopilot development with ROS 2 integration. It includes Docker-based PX4 simulation infrastructure and GitHub Actions workflows for continuous integration testing.
 
 ## Architecture
 
-This repository follows a modular design where each component is maintained as an independent submodule:
-
 ```
-PX4-PreFlight/                    (Orchestrator)
-├── ros-px4-bridge-docker/        (Submodule) - ROS 2 + PX4 Docker bridge
-├── px4-github-workflows/         (Submodule) - CI/CD workflows
-├── code-checker/                 (Submodule) - Code quality tools
-└── .github/workflows/            (Orchestrator workflows)
+PX4-PreFlight/
+├── ros-px4-bridge-docker/        (Submodule) - ROS 2 + PX4 Docker environment
+│   ├── scripts/                  - Setup and runtime scripts
+│   ├── Dockerfile                - Container definition
+│   └── .github/workflows/        - Docker build workflow
+├── .github/workflows/
+│   ├── full_integration.yml      - Main CI/CD orchestrator
+│   └── px4_ros_integration.yml   - Reusable PX4+ROS2 test workflow
+└── run_all_workflows_local.sh    - Local testing script (using act)
 ```
 
-### Submodules
+### Components
 
-1. **[ros-px4-bridge-docker](https://github.com/derickcoder44/ros-px4-birdge-docker)**
-   - ROS 2 + PX4 Docker bridge functionality
-   - Build scripts, simulation runners, DDS agent setup
-   - Reusable in any project needing PX4 simulation
-
-2. **[px4-github-workflows](https://github.com/derickcoder44/px4-github-workflows)**
-   - Reusable GitHub Actions workflows for PX4+ROS 2
-   - CI/CD templates and local testing utilities
-   - Can be inherited by other repos for automated testing
-
-3. **[code-checker](https://github.com/derickcoder44/code-checker)**
-   - Type checking, linting, and auto-review tools
-   - Language-agnostic code quality enforcement
-   - Reusable across any codebase
+**[ros-px4-bridge-docker](https://github.com/derickcoder44/ros-px4-bridge-docker)** (Submodule)
+- Containerized PX4 SITL simulation environment
+- ROS 2 Humble + Gazebo Garden + Micro XRCE-DDS Agent
+- Build and runtime scripts for PX4 and ROS 2
+- Python-based flight test script (takeoff, hover, land)
+- Reusable in any project requiring PX4 simulation
 
 ## Quick Start
 
 ### Clone with Submodules
 
 ```bash
-# Clone the repository with all submodules
+# Clone the repository with submodules
 git clone --recursive https://github.com/derickcoder44/PX4-PreFlight.git
 
 # Or if already cloned, initialize submodules
 git submodule update --init --recursive
 ```
 
-### Using Individual Modules
+### Using ros-px4-bridge-docker Independently
 
-Each submodule can be used independently:
+The Docker environment can be used as a standalone submodule in other projects:
 
 ```bash
-# Use just the ROS 2 + PX4 Docker bridge
-git submodule add https://github.com/derickcoder44/ros-px4-birdge-docker.git
+# Add to your project
+git submodule add https://github.com/derickcoder44/ros-px4-bridge-docker.git
 
-# Use just the workflows
-git submodule add https://github.com/derickcoder44/px4-github-workflows.git
-
-# Use just the code checker
-git submodule add https://github.com/derickcoder44/code-checker.git
+# Use the scripts
+cd ros-px4-bridge-docker
+./scripts/install_dependencies.sh
+./scripts/build_px4.sh
+./scripts/run_simulation.sh
 ```
 
 ## Features
 
-- **Modular Design**: Each component is independent and reusable
-- **Automated Testing**: Complete CI/CD pipeline for PX4+ROS 2 integration
-- **Code Quality**: Automated type checking, linting, and reviews
-- **Docker Support**: Containerized PX4 simulation environment
+- **Docker-Based Simulation**: Containerized PX4 SITL with Gazebo Garden
+- **ROS 2 Integration**: Full ROS 2 Humble support with px4_msgs and px4_ros_com
+- **Automated Testing**: CI/CD workflows for PX4+ROS 2 integration testing
+- **Flight Testing**: Python script for automated takeoff, hover, and landing tests
 - **Local Testing**: Test GitHub Actions workflows locally with `act`
+- **Reusable Workflows**: Modular workflow design for use in other projects
 
 ## Development Workflow
 
 ### Running Tests Locally
 
 ```bash
-# Test PX4+ROS2 workflow locally
-cd px4-github-workflows
-./test_workflow.sh
+# Test all workflows locally using act
+./run_all_workflows_local.sh
 
-# Run code quality checks
-cd code-checker
-./scripts/run_linters.sh .
-./scripts/run_type_check.sh .
+# This will:
+# - Run full integration tests
+# - Execute flight tests with video recording
+# - Save artifacts to /tmp/act-artifacts/
 ```
 
 ### Setting Up PX4 Environment
@@ -108,45 +102,54 @@ cd ros-px4-bridge-docker
 
 ## CI/CD Integration
 
-The repository includes orchestrator workflows that combine all submodule capabilities. These run automatically on push and pull requests.
+The repository includes GitHub Actions workflows that run automatically on push and pull requests.
 
 ### Workflow Structure
 
-- **Full Integration Test**: Tests PX4+ROS 2 integration using workflows from `px4-github-workflows`
-- **Code Quality Checks**: Runs type checking and linting from `code-checker`
-- **Simulation Validation**: Uses scripts from `ros-px4-bridge-docker` for environment setup
+**full_integration.yml** - Main orchestrator workflow that:
+- Builds Docker images (ros-bridge and px4-sim)
+- Runs PX4+ROS 2 integration tests
+- Executes flight tests with takeoff, hover, and landing
+- Uploads artifacts (logs, videos) on failure
 
-## Updating Submodules
+**px4_ros_integration.yml** - Reusable workflow that:
+- Pulls pre-built container images from GHCR
+- Starts DDS agent and PX4 SITL simulation
+- Verifies ROS 2 topic communication
+- Tests sensor data streaming from PX4 to ROS 2
+
+## Updating Submodule
 
 ```bash
-# Update all submodules to latest
-git submodule update --remote
-
-# Update specific submodule
+# Update ros-px4-bridge-docker to latest
 git submodule update --remote ros-px4-bridge-docker
 
-# Commit submodule updates
-git add .
-git commit -m "Update submodules to latest versions"
+# Commit submodule update
+git add ros-px4-bridge-docker
+git commit -m "Update ros-px4-bridge-docker to latest version"
 ```
 
 ## Use Cases
 
 ### For PX4 Developers
-Use the complete suite for comprehensive testing of PX4 changes.
+- Test PX4 Autopilot changes with ROS 2 integration
+- Verify SITL simulation with Gazebo
+- Validate DDS communication between PX4 and ROS 2
 
 ### For ROS 2 Developers
-Include `ros-px4-bridge-docker` and `px4-github-workflows` for PX4 integration testing.
+- Test ROS 2 nodes with PX4 simulation
+- Develop autonomous flight algorithms
+- Prototype drone control systems
 
-### For General Projects
-Use `code-checker` independently for code quality enforcement.
+### For CI/CD Integration
+- Use reusable workflows in other repositories
+- Automate PX4+ROS 2 testing in your projects
+- Leverage Docker-based testing infrastructure
 
 ## Contributing
 
-Each submodule has its own repository and can be improved independently:
-- Contribute to [ros-px4-bridge-docker](https://github.com/derickcoder44/ros-px4-birdge-docker)
-- Contribute to [px4-github-workflows](https://github.com/derickcoder44/px4-github-workflows)
-- Contribute to [code-checker](https://github.com/derickcoder44/code-checker)
+Contributions are welcome! The ros-px4-bridge-docker submodule has its own repository:
+- Contribute to [ros-px4-bridge-docker](https://github.com/derickcoder44/ros-px4-bridge-docker)
 
 ## License
 
