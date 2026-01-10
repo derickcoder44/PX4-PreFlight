@@ -29,9 +29,9 @@ jobs:
           source /root/workspace/ros2_ws/install/setup.bash
           export ROS_DOMAIN_ID=0
 
-          # Start DDS agent
-          echo "Starting MicroXRCEAgent..."
-          MicroXRCEAgent udp4 -p 8888 > "$LOG_DIR/microxrce_agent.log" 2>&1 &
+          # Start DDS agent with explicit domain ID
+          echo "Starting MicroXRCEAgent on domain $ROS_DOMAIN_ID..."
+          MicroXRCEAgent udp4 -p 8888 -d $ROS_DOMAIN_ID > "$LOG_DIR/microxrce_agent.log" 2>&1 &
           DDS_PID=$!
           echo $DDS_PID > /root/.microxrce_agent.pid
           echo "MicroXRCEAgent started (PID: $DDS_PID)"
