@@ -24,17 +24,18 @@ jobs:
           LOG_DIR=/root/logs
           mkdir -p "$LOG_DIR"
 
-          # Start DDS agent WITH ROS2 environment sourced
+          # Source ROS2 environment globally
+          source /opt/ros/humble/setup.bash
+          source /root/workspace/ros2_ws/install/setup.bash
+          export ROS_DOMAIN_ID=0
+
+          # Start DDS agent
           echo "Starting MicroXRCEAgent..."
-          bash -c '
-            source /opt/ros/humble/setup.bash
-            source /root/workspace/ros2_ws/install/setup.bash
-            MicroXRCEAgent udp4 -p 8888 > /root/logs/microxrce_agent.log 2>&1 &
-            echo $! > /root/.microxrce_agent.pid
-          '
-          sleep 2
-          DDS_PID=$(cat /root/.microxrce_agent.pid)
+          MicroXRCEAgent udp4 -p 8888 > "$LOG_DIR/microxrce_agent.log" 2>&1 &
+          DDS_PID=$!
+          echo $DDS_PID > /root/.microxrce_agent.pid
           echo "MicroXRCEAgent started (PID: $DDS_PID)"
+          sleep 2
 
           # Start PX4 SITL with Gazebo
           echo "Starting PX4 SITL with Gazebo..."
@@ -52,6 +53,7 @@ jobs:
         run: |
           source /opt/ros/humble/setup.bash
           source /root/workspace/ros2_ws/install/setup.bash
+          export ROS_DOMAIN_ID=0
 
           # Verify processes are still running
           if ! kill -0 $(cat /root/.microxrce_agent.pid) 2>/dev/null; then
@@ -74,6 +76,7 @@ jobs:
           if ! timeout 90 bash -c '
             source /opt/ros/humble/setup.bash
             source /root/workspace/ros2_ws/install/setup.bash
+            export ROS_DOMAIN_ID=0
             while ! ros2 topic list 2>/dev/null | grep -q "^/fmu/fmu/out/sensor_combined$"; do
               echo "Waiting for topic /fmu/fmu/out/sensor_combined... ($(date +%H:%M:%S))"
               sleep 5
