@@ -14,6 +14,10 @@ PX4-PreFlight/
 │   ├── scripts/                  - Setup and runtime scripts
 │   ├── Dockerfile                - Container definition
 │   └── .github/workflows/        - Docker build workflow
+├── px4-flight-test-docker/       (Submodule) - Automated flight testing
+│   ├── scripts/                  - Flight test scripts
+│   ├── Dockerfile                - Container definition
+│   └── .github/workflows/        - Flight test workflow
 ├── .github/workflows/
 │   ├── full_integration.yml      - Main CI/CD orchestrator
 │   └── px4_ros_integration.yml   - Reusable PX4+ROS2 test workflow
@@ -26,8 +30,13 @@ PX4-PreFlight/
 - Containerized PX4 SITL simulation environment
 - ROS 2 Humble + Gazebo Garden + Micro XRCE-DDS Agent
 - Build and runtime scripts for PX4 and ROS 2
-- Python-based flight test script (takeoff, hover, land)
 - Reusable in any project requiring PX4 simulation
+
+**[px4-flight-test-docker](https://github.com/derickcoder44/px4-flight-test-docker)** (Submodule)
+- Automated flight testing with video recording
+- Python-based flight test script (takeoff, hover, land)
+- Built on top of px4-sim-docker
+- Reusable workflow for automated testing
 
 ## Quick Start
 
@@ -118,15 +127,18 @@ The repository includes GitHub Actions workflows that run automatically on push 
 - Verifies ROS 2 topic communication
 - Tests sensor data streaming from PX4 to ROS 2
 
-## Updating Submodule
+## Updating Submodules
 
 ```bash
 # Update ros-px4-bridge-docker to latest
 git submodule update --remote ros-px4-bridge-docker
 
-# Commit submodule update
-git add ros-px4-bridge-docker
-git commit -m "Update ros-px4-bridge-docker to latest version"
+# Update px4-flight-test-docker to latest
+git submodule update --remote px4-flight-test-docker
+
+# Commit submodule updates
+git add ros-px4-bridge-docker px4-flight-test-docker
+git commit -m "Update submodules to latest versions"
 ```
 
 ## Use Cases
@@ -148,8 +160,9 @@ git commit -m "Update ros-px4-bridge-docker to latest version"
 
 ## Contributing
 
-Contributions are welcome! The ros-px4-bridge-docker submodule has its own repository:
+Contributions are welcome! The submodules have their own repositories:
 - Contribute to [ros-px4-bridge-docker](https://github.com/derickcoder44/ros-px4-bridge-docker)
+- Contribute to [px4-flight-test-docker](https://github.com/derickcoder44/px4-flight-test-docker)
 
 ## License
 

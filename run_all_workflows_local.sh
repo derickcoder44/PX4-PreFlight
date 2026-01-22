@@ -10,7 +10,7 @@ echo "=== Testing PX4-PreFlight All Workflows Locally ==="
 echo ""
 
 # Check if act is installed
-if ! command -v act &> /dev/null; then
+if ! command -v act &> /dev/null && [ ! -f "$HOME/bin/act" ]; then
     echo "ERROR: 'act' is not installed."
     echo ""
     echo "To install act:"
@@ -21,8 +21,13 @@ if ! command -v act &> /dev/null; then
     exit 1
 fi
 
+# Add ~/bin to PATH if it exists and act is there
+if [ -f "$HOME/bin/act" ]; then
+    export PATH="$HOME/bin:$PATH"
+fi
+
 # Check if submodules are initialized
-if [ ! -f "px4-github-workflows/.github/workflows/px4_ros_ci.yml" ]; then
+if [ ! -d "ros-px4-bridge-docker/.git" ] || [ ! -d "px4-flight-test-docker/.git" ]; then
     echo "Submodules not initialized. Initializing now..."
     git submodule update --init --recursive
 fi
@@ -58,7 +63,7 @@ act -W .github/workflows/full_integration.yml \
 
 echo ""
 echo "=== Running Flight Test with Video Recording ==="
-cd ros-px4-bridge-docker
+cd px4-flight-test-docker
 act -W .github/workflows/test-flight.yml \
     --container-architecture linux/arm64 \
     --artifact-server-path /tmp/act-artifacts \

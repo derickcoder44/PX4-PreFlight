@@ -1,3 +1,6 @@
 [submodule "ros-px4-bridge-docker"]
 	path = ros-px4-bridge-docker
 	url = https://github.com/derickcoder44/ros-px4-bridge-docker.git
+[submodule "px4-flight-test-docker"]
+	path = px4-flight-test-docker
+	url = https://github.com/derickcoder44/px4-flight-test-docker.git
