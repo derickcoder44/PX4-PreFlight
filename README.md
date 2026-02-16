@@ -14,9 +14,13 @@ PX4-PreFlight/
 │   ├── scripts/                  - Setup and runtime scripts
 │   ├── Dockerfile                - Container definition
 │   └── .github/workflows/        - Docker build workflow
+├── px4-sim-docker/               (Submodule) - PX4 SITL + Gazebo simulation
+│   ├── Dockerfile                - Container definition (builds on ros-px4-bridge-docker)
+│   ├── .github/workflows/        - Docker build workflow
+│   └── README.md                 - Documentation
 ├── px4-flight-test-docker/       (Submodule) - Automated flight testing
 │   ├── scripts/                  - Flight test scripts
-│   ├── Dockerfile                - Container definition
+│   ├── Dockerfile                - Container definition (builds on px4-sim-docker)
 │   └── .github/workflows/        - Flight test workflow
 ├── .github/workflows/
 │   ├── full_integration.yml      - Main CI/CD orchestrator
@@ -26,17 +30,25 @@ PX4-PreFlight/
 
 ### Components
 
-**[ros-px4-bridge-docker](https://github.com/derickcoder44/ros-px4-bridge-docker)** (Submodule)
-- Containerized PX4 SITL simulation environment
-- ROS 2 Humble + Gazebo Garden + Micro XRCE-DDS Agent
-- Build and runtime scripts for PX4 and ROS 2
-- Reusable in any project requiring PX4 simulation
+The project uses a **layered Docker architecture** where each image builds on the previous one:
 
-**[px4-flight-test-docker](https://github.com/derickcoder44/px4-flight-test-docker)** (Submodule)
-- Automated flight testing with video recording
-- Python-based flight test script (takeoff, hover, land)
-- Built on top of px4-sim-docker
-- Reusable workflow for automated testing
+**[ros-px4-bridge-docker](https://github.com/derickcoder44/ros-px4-bridge-docker)** (Submodule - Base Layer)
+- Foundation Docker image with ROS 2 Humble + Micro XRCE-DDS Agent
+- PX4 ROS 2 interface packages (px4_msgs, px4_ros_com)
+- Build and runtime scripts for PX4 and ROS 2
+- Reusable in any project requiring PX4-ROS 2 communication
+
+**[px4-sim-docker](https://github.com/derickcoder44/px4-sim-docker)** (Submodule - Simulation Layer)
+- Builds FROM ros-px4-bridge-docker base image
+- Adds PX4 Autopilot SITL (Software-In-The-Loop) build
+- Gazebo Garden simulator with PX4 models
+- Ready-to-run simulation environment for testing
+
+**[px4-flight-test-docker](https://github.com/derickcoder44/px4-flight-test-docker)** (Submodule - Testing Layer)
+- Builds FROM px4-sim-docker simulation image
+- Adds automated flight testing scripts (takeoff, hover, land)
+- Video recording capabilities for CI/CD
+- Python-based test orchestration
 
 ## Quick Start
 
@@ -50,19 +62,32 @@ git clone --recursive https://github.com/derickcoder44/PX4-PreFlight.git
 git submodule update --init --recursive
 ```
 
-### Using ros-px4-bridge-docker Independently
+### Using Docker Images Independently
 
-The Docker environment can be used as a standalone submodule in other projects:
+Each Docker image can be pulled from GitHub Container Registry and used standalone:
 
 ```bash
-# Add to your project
+# Use the base ROS 2 + DDS Agent image
+docker pull ghcr.io/derickcoder44/ros-px4-bridge-docker:latest
+
+# Use the PX4 SITL simulation image
+docker pull ghcr.io/derickcoder44/px4-sim-docker:latest
+
+# Use the flight test image
+docker pull ghcr.io/derickcoder44/px4-flight-test-docker:latest
+```
+
+Or add as submodules to your project:
+
+```bash
+# Add base layer
 git submodule add https://github.com/derickcoder44/ros-px4-bridge-docker.git
 
-# Use the scripts
-cd ros-px4-bridge-docker
-./scripts/install_dependencies.sh
-./scripts/build_px4.sh
-./scripts/run_simulation.sh
+# Add simulation layer
+git submodule add https://github.com/derickcoder44/px4-sim-docker.git
+
+# Add testing layer
+git submodule add https://github.com/derickcoder44/px4-flight-test-docker.git
 ```
 
 ## Features
@@ -130,14 +155,16 @@ The repository includes GitHub Actions workflows that run automatically on push 
 ## Updating Submodules
 
 ```bash
-# Update ros-px4-bridge-docker to latest
-git submodule update --remote ros-px4-bridge-docker
+# Update all submodules to latest
+git submodule update --remote --recursive
 
-# Update px4-flight-test-docker to latest
+# Or update individual submodules:
+git submodule update --remote ros-px4-bridge-docker
+git submodule update --remote px4-sim-docker
 git submodule update --remote px4-flight-test-docker
 
 # Commit submodule updates
-git add ros-px4-bridge-docker px4-flight-test-docker
+git add ros-px4-bridge-docker px4-sim-docker px4-flight-test-docker
 git commit -m "Update submodules to latest versions"
 ```
 
@@ -162,6 +189,7 @@ git commit -m "Update submodules to latest versions"
 
 Contributions are welcome! The submodules have their own repositories:
 - Contribute to [ros-px4-bridge-docker](https://github.com/derickcoder44/ros-px4-bridge-docker)
+- Contribute to [px4-sim-docker](https://github.com/derickcoder44/px4-sim-docker)
 - Contribute to [px4-flight-test-docker](https://github.com/derickcoder44/px4-flight-test-docker)
 
 ## License

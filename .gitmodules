@@ -4,3 +4,6 @@
 [submodule "px4-flight-test-docker"]
 	path = px4-flight-test-docker
 	url = https://github.com/derickcoder44/px4-flight-test-docker.git
+[submodule "px4-sim-docker"]
+	path = px4-sim-docker
+	url = https://github.com/derickcoder44/px4-sim-docker.git
