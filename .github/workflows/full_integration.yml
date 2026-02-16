@@ -13,7 +13,7 @@ jobs:
   # Note: We grant packages:write to match reusable workflow permissions, but the workflow
   # won't actually push because event_name == 'workflow_call' triggers the skip condition
   build-ros-bridge-image:
-    uses: derickcoder44/ros-px4-bridge-docker/.github/workflows/build.yml@main
+    uses: Poppy-Robotics/ros-px4-bridge-docker/.github/workflows/build.yml@main
     secrets: inherit
     permissions:
       contents: read
@@ -37,7 +37,7 @@ jobs:
 
   # Flight test with takeoff, hover, and landing
   flight-test:
-    uses: derickcoder44/px4-flight-test-docker/.github/workflows/test-flight.yml@main
+    uses: Poppy-Robotics/px4-flight-test-docker/.github/workflows/test-flight.yml@main
     needs:
       - px4-ros-integration
       - build-sim-image
